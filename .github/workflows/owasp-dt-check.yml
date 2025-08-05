@@ -5,6 +5,13 @@ on:
     branches: [main]
 
 jobs:
+  dependency-check:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run SBOM or Dependency-Track API call
+        run: echo "This will run on your local runner"
   sbom:
     runs-on: ubuntu-latest
     steps:
