@@ -1,0 +1,25 @@
+name: Security Scans
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run SAST scan
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript,python
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Dependency Scan
+        uses: OWASP/Dependency-Check-GitHub-Action@v6
