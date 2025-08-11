@@ -1,0 +1,36 @@
+name: Build and Sign with SLSA
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build image
+        run: docker build -t myorg/myapp:${{ github.sha }} .
+      
+      - name: Push image
+        run: docker push myorg/myapp:${{ github.sha }}
+      
+      - name: Sign image with Cosign
+        run: cosign sign myorg/myapp:${{ github.sha }} \
+          --key ${{ secrets.COSIGN_KEY }}
+      
+      - name: Generate SLSA provenance
+        uses: slsa-framework/github-actions-demo@v1
