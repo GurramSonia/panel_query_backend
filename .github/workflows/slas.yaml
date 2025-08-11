@@ -23,10 +23,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Build image
-        run: docker build -t myorg/myapp:${{ github.sha }} .
+        run: docker build -t soniagurramavari/backend-my-image:v1 .
       
       - name: Push image
-        run: docker push myorg/myapp:${{ github.sha }}
+        run: docker push soniagurramavari/backend-my-image:v1
       
       - name: Sign image with Cosign
         run: cosign sign myorg/myapp:${{ github.sha }} \
