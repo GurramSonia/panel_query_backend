@@ -29,10 +29,11 @@ jobs:
         run: docker push soniagurramavari/backend-my-image:v1
       
       - name: Sign image with Cosign
-        run: cosign sign \ soniagurramavari/backend-my-image:v1
-          --key ${{ secrets.COSIGN_KEY }}
+        run: cosign sign --key cosign.key soniagurramavari/backend-my-image:v1
+        #run: cosign sign \ soniagurramavari/backend-my-image:v1
+        #--key ${{ secrets.COSIGN_KEY }}
       #- name: Sign image with Cosign
-      #run: cosign sign --key cosign.key soniagurramavari/backend-my-image:v1
+     
       
       - name: Generate SLSA provenance
         uses: slsa-framework/github-actions-demo@v1
