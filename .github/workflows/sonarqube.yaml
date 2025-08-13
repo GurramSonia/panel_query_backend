@@ -1,36 +1,31 @@
-name: SonarQube Scan
+name: SonarQube Analysis
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   sonarqube:
-    name: SonarQube Analysis
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK (if using Java; skip for JS/Python)
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-
+      # Install Sonar Scanner CLI
       - name: Install Sonar Scanner
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
           unzip sonar-scanner.zip -d $HOME
-          export PATH=$HOME/sonar-scanner-*/bin:$PATH
+          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
 
-      - name: Run SonarQube Scanner
+      # Run SonarQube analysis
+      - name: Run Sonar Scanner
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=backend_query_panel1
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.sources=. \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
